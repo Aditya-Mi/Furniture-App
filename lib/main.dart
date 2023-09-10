@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:furniture_app/on_boarding_screen.dart';
+import 'package:furniture_app/screens/on_boarding_screen.dart';
 import 'package:furniture_app/screens/login_screen.dart';
+import 'package:furniture_app/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 bool? onBoarding;
@@ -21,11 +22,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home:
-          onBoarding! == true ? const OnBoardingScreen() : const LoginScreen(),
+      home: onBoarding! == true ? const OnBoardingScreen() : const MainScreen(),
     );
   }
 }

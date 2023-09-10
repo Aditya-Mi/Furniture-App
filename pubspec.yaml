@@ -36,6 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.2.1
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,25 @@ flutter:
   assets:
     - assets/images/on_boarding_image.png
     - assets/images/log_logo.png
+    - assets/images/lampImage.png
+    - assets/icons/bell.svg
+    - assets/icons/bi_person.svg
+    - assets/icons/clarity_home.svg
+    - assets/icons/marker_1.svg
+    - assets/icons/cart.svg
+    - assets/icons/home_fill.svg
+    - assets/icons/marker_fill.svg
+    - assets/icons/person_fill.svg
+    - assets/icons/cart_fill.svg
+    - assets/icons/search.svg
+    - assets/icons/bell.svg
+    - assets/icons/armchair.svg
+    - assets/icons/bed.svg
+    - assets/icons/chair.svg
+    - assets/icons/table.svg
+    - assets/icons/lamp.svg
+    - assets/icons/bag.svg
+    - assets/icons/cross.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
