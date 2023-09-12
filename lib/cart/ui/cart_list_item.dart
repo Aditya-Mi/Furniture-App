@@ -25,7 +25,7 @@ class _CartListItemState extends State<CartListItem> {
               borderRadius: BorderRadius.circular(10),
               image: const DecorationImage(
                 image: AssetImage('assets/images/lampImage.png'),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
           ),
