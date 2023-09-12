@@ -25,7 +25,7 @@ class _CartListItemState extends State<CartListItem> {
               borderRadius: BorderRadius.circular(10),
               image: const DecorationImage(
                 image: AssetImage('assets/images/lampImage.png'),
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
             ),
           ),
@@ -57,7 +57,7 @@ class _CartListItemState extends State<CartListItem> {
                       fontSize: 16,
                       color: homeScreenItemPriceColor),
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: 115,
                   child: Row(
@@ -69,9 +69,13 @@ class _CartListItemState extends State<CartListItem> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: iconBackground),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.black,
+                        child: IconButton(
+                          onPressed: () {},
+                          padding: const EdgeInsets.all(0),
+                          icon: const Icon(
+                            Icons.add,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       const Spacer(),
@@ -85,15 +89,15 @@ class _CartListItemState extends State<CartListItem> {
                       ),
                       const Spacer(),
                       Container(
-                        alignment: Alignment.center,
                         width: 30,
                         height: 30,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: iconBackground),
-                        child: const Icon(
-                          Icons.minimize_rounded,
-                          color: Colors.black,
+                        child: IconButton(
+                          onPressed: () {},
+                          padding: const EdgeInsets.all(0),
+                          icon: SvgPicture.asset('assets/icons/minus.svg'),
                         ),
                       ),
                     ],

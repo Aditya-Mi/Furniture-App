@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/home/ui/item_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -104,8 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GridView.count(
                   shrinkWrap: true,
-                  childAspectRatio: 0.61,
+                  childAspectRatio: 0.519,
                   crossAxisSpacing: 30,
+                  mainAxisSpacing: 15,
                   crossAxisCount: 2,
                   children: [
                     GridViewItem(),
@@ -168,46 +170,52 @@ class GridViewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 160,
-      height: 254,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 160,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/lampImage.png'),
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ItemDetailsScreen()));
+      },
+      child: SizedBox(
+        width: 160,
+        height: 254,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 160,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/lampImage.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Text(
-            'Black Simple Lamp',
-            style: TextStyle(
-                fontFamily: 'NunitoSans',
-                fontSize: 14,
-                color: homeScreenItemTextColor),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Text(
-            '\$ 12.00',
-            style: TextStyle(
-                fontFamily: 'NunitoSans',
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: homeScreenItemPriceColor),
-          ),
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            const Text(
+              'Black Simple Lamp',
+              style: TextStyle(
+                  fontFamily: 'NunitoSans',
+                  fontSize: 14,
+                  color: homeScreenItemTextColor),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Text(
+              '\$ 12.00',
+              style: TextStyle(
+                  fontFamily: 'NunitoSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: homeScreenItemPriceColor),
+            ),
+          ],
+        ),
       ),
     );
   }

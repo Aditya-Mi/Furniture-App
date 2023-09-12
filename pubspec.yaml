@@ -83,6 +83,7 @@ flutter:
     - assets/icons/lamp.svg
     - assets/icons/bag.svg
     - assets/icons/cross.svg
+    - assets/icons/minus.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

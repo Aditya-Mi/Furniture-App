@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/cart/ui/cart_list_item.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
@@ -57,7 +56,7 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             height: 140,
             child: Column(

@@ -54,7 +54,7 @@ class FavouriteListItem extends StatelessWidget {
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           SizedBox(
             height: 100,
             child: Column(

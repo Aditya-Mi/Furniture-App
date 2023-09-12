@@ -59,6 +59,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   fontFamily: 'NunitoSans',
                   color: Color.fromARGB(255, 128, 128, 128),
                 ),
+                textAlign: TextAlign.justify,
               ),
             ),
           ),
