@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/ui/favourite_list_item.dart';
 
@@ -15,6 +16,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0.0,
+        backgroundColor: backgroundColor,
         leading: IconButton(
           icon: SvgPicture.asset('assets/icons/search.svg'),
           onPressed: () {},
@@ -60,6 +63,13 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: CustomButton(
+          function: () {},
+          text: 'Add all to my cart',
+          height: 50,
+          width: MediaQuery.of(context).size.width * 0.90,
+          fontFamily: 'NunitoSans'),
     );
   }
 }

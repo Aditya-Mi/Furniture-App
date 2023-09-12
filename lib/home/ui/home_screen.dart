@@ -13,7 +13,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0.0,
         leading: IconButton(
           icon: SvgPicture.asset('assets/icons/search.svg'),
           onPressed: () {},
