@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture'));
       final data = jsonDecode(result.body);
       if (result.statusCode != 200) {
-        throw 'An unexpected error occurred';
+        throw 'An unexpected error occurred ';
       }
 
       return data;
