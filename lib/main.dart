@@ -3,6 +3,7 @@ import 'package:furniture_app/screens/on_boarding_screen.dart';
 import 'package:furniture_app/screens/login_screen.dart';
 import 'package:furniture_app/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 bool? onBoarding;
 void main() async {
@@ -10,7 +11,11 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   onBoarding = prefs.getBool('onBoarding');
   onBoarding ??= true;
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
