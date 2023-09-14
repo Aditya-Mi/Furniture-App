@@ -23,7 +23,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final productData = ref.watch(productDataProvider);
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
@@ -57,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-        body: productData.when(data: (data) {
+        body: ref.watch(productFilteredDataProvider).when(data: (data) {
           return SizedBox(
             height: double.infinity,
             child: Column(
@@ -101,27 +100,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      listItem('Chair', 'assets/icons/chair.svg'),
+                      GestureDetector(
+                          child: listItem('Chair', 'assets/icons/chair.svg')),
                       const SizedBox(width: 10),
-                      listItem('Table', 'assets/icons/table.svg'),
+                      GestureDetector(
+                          child: listItem('Table', 'assets/icons/table.svg')),
                       const SizedBox(width: 10),
-                      listItem('Armchair', 'assets/icons/armchair.svg'),
+                      GestureDetector(
+                          child: listItem(
+                              'Armchair', 'assets/icons/armchair.svg')),
                       const SizedBox(width: 10),
-                      listItem('Bed', 'assets/icons/bed.svg'),
+                      GestureDetector(
+                          child: listItem('Bed', 'assets/icons/bed.svg')),
                       const SizedBox(width: 10),
-                      listItem('Lamp', 'assets/icons/lamp.svg'),
+                      GestureDetector(
+                          child: listItem('Lamp', 'assets/icons/lamp.svg')),
                     ],
                   ),
                 ),
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GridView.builder(
                       shrinkWrap: true,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.519,
-                        crossAxisSpacing: 30,
+                        childAspectRatio: 0.54,
+                        crossAxisSpacing: 20,
                         mainAxisSpacing: 15,
                         crossAxisCount: 2,
                       ),
@@ -150,37 +155,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget listItem(String name, String imgPath) {
-    return GestureDetector(
-      child: SizedBox(
-        width: 65,
-        child: Column(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: itemBackground,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: IconButton(
-                onPressed: () {},
-                icon: SvgPicture.asset(imgPath),
-              ),
+    return SizedBox(
+      width: 65,
+      child: Column(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: itemBackground,
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(
-              height: 5,
+            child: IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(imgPath),
             ),
-            Text(
-              name,
-              style: const TextStyle(
-                fontFamily: 'NunitoSans',
-                color: Colors.black,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            name,
+            style: const TextStyle(
+              fontFamily: 'NunitoSans',
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

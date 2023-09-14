@@ -1,7 +1,10 @@
 import 'package:furniture_app/models/product.dart';
-import 'package:furniture_app/providers/api_provider.dart';
+import 'package:furniture_app/repository/api_service.dart';
 import 'package:riverpod/riverpod.dart';
 
-final productDataProvider = FutureProvider<List<Product>>((ref) {
-  return ref.read(productApiProvider).getProduct();
+final productApiProvider = Provider((ref) => ApiService());
+
+final productFilteredDataProvider = FutureProvider<List<Product>>((ref) {
+  final productApi = ref.watch(productApiProvider);
+  return productApi.getProduct();
 });

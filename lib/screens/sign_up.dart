@@ -1,17 +1,75 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/providers/auth_provider.dart';
 import 'package:furniture_app/screens/login_screen.dart';
+import 'package:furniture_app/screens/main_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final _form = GlobalKey<FormState>();
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+  var _enteredUsername = '';
+  var _enteredConfirmPassword = '';
   bool _showPassword = false;
+
+  void _submit() async {
+    final isValid = _form.currentState!.validate();
+    if (!isValid) {
+      return;
+    }
+    if (_enteredPassword != _enteredConfirmPassword) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Confirm Password should be same as Password'),
+          ),
+        );
+      }
+      return;
+    }
+    _form.currentState!.save();
+    try {
+      final userCredential = await ref
+          .read(authRepositoryProvider)
+          .signUpWithEmailPassword(
+              email: _enteredEmail,
+              password: _enteredPassword,
+              name: _enteredUsername);
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user != null) {
+          if (context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(),
+              ),
+            );
+          }
+        }
+      });
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Authentication failed'),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ],
                 ),
                 child: Form(
+                  key: _form,
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -88,8 +147,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 fontSize: 14,
                                 fontFamily: 'NunitoSans'),
                           ),
+                          enableSuggestions: false,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().length < 4) {
+                              return 'Please enter at least 4 characters long';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredUsername = value!;
+                          },
                         ),
                         TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
                           decoration: const InputDecoration(
                             hintText: 'Email',
                             hintStyle: TextStyle(
@@ -97,6 +171,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 fontSize: 14,
                                 fontFamily: 'NunitoSans'),
                           ),
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                !value.contains('@')) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredEmail = value!;
+                          },
                         ),
                         TextFormField(
                           decoration: InputDecoration(
@@ -120,10 +205,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           obscureText: !_showPassword,
+                          validator: (value) {
+                            if (value == null || value.trim().length < 6) {
+                              return 'Password must be atleast 6 characters long.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredPassword = value!;
+                          },
                         ),
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: 'Password',
+                            hintText: 'Confirm Password',
                             hintStyle: const TextStyle(
                               color: hintTextColor,
                               fontSize: 14,
@@ -143,9 +237,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           obscureText: !_showPassword,
+                          validator: (value) {
+                            if (value == null || value.trim().length < 6) {
+                              return 'Password must be atleast 6 characters long.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredPassword = value!;
+                          },
                         ),
                         CustomButton(
-                          function: () {},
+                          function: _submit,
                           text: 'Sign up',
                           height: 50,
                           width: 285,
