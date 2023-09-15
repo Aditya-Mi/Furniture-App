@@ -21,7 +21,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _showPassword = false;
 
   void _submit() {
-    print('submit triggered');
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
@@ -216,8 +215,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const SignUpScreen()));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignUpScreen()));
                           },
                           child: const Text(
                             'SIGN UP',

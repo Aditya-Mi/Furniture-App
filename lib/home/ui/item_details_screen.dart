@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/models/cart_item.dart';
+import 'package:furniture_app/models/favourite_item.dart';
 import 'package:furniture_app/models/product.dart';
+import 'package:furniture_app/repository/firestore_repository.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final Product product;
@@ -13,6 +17,49 @@ class ItemDetailsScreen extends StatefulWidget {
 }
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
+  void _addToCart() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
+    double price = (widget.product.price).toDouble();
+    String res = await FirestoreRepository().addCartItem(
+        CartItem(
+            id: widget.product.id,
+            name: widget.product.name,
+            price: price,
+            quantity: 1,
+            imageUrl: widget.product.images[0]),
+        userId);
+    if (res == "success" && context.mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Added to cart'),
+        ),
+      );
+    }
+  }
+
+  void _addToFavourite() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
+    double price = (widget.product.price).toDouble();
+    String res = await FirestoreRepository().addFavouriteItem(
+        FavouriteItem(
+            id: widget.product.id,
+            name: widget.product.name,
+            price: price,
+            imageUrl: widget.product.images[0]),
+        userId);
+    if (res == "success" && context.mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Added to favourites'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final buttonWidth = MediaQuery.of(context).size.width - 130;
@@ -203,7 +250,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                               borderRadius: BorderRadius.circular(8),
                               color: iconBackground),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: _addToFavourite,
                             icon: const Icon(
                               Icons.bookmark_border,
                               color: Colors.black,
@@ -211,7 +258,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           ),
                         ),
                         CustomButton(
-                            function: () {},
+                            function: _addToCart,
                             text: 'Add to cart',
                             height: 60,
                             width: buttonWidth,

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/models/cart_item.dart';
+import 'package:furniture_app/repository/firestore_repository.dart';
 
 class CartListItem extends StatefulWidget {
-  const CartListItem({super.key});
+  final CartItem cartItem;
+  final String uid;
+  const CartListItem({super.key, required this.cartItem, required this.uid});
 
   @override
   State<CartListItem> createState() => _CartListItemState();
@@ -23,8 +27,8 @@ class _CartListItemState extends State<CartListItem> {
             height: 100,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/lampImage.png'),
+              image: DecorationImage(
+                image: NetworkImage(widget.cartItem.imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -38,9 +42,9 @@ class _CartListItemState extends State<CartListItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Text(
-                  'Chair',
-                  style: TextStyle(
+                Text(
+                  widget.cartItem.name,
+                  style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -49,9 +53,9 @@ class _CartListItemState extends State<CartListItem> {
                 const SizedBox(
                   height: 5,
                 ),
-                const Text(
-                  '\$ 12.00',
-                  style: TextStyle(
+                Text(
+                  '\$ ${widget.cartItem.price}',
+                  style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -59,7 +63,7 @@ class _CartListItemState extends State<CartListItem> {
                 ),
                 const Spacer(),
                 SizedBox(
-                  width: 115,
+                  width: 130,
                   child: Row(
                     children: [
                       Container(
@@ -79,9 +83,9 @@ class _CartListItemState extends State<CartListItem> {
                         ),
                       ),
                       const Spacer(),
-                      const Text(
-                        '01',
-                        style: TextStyle(
+                      Text(
+                        '${widget.cartItem.price}',
+                        style: const TextStyle(
                             fontFamily: 'NunitoSans',
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
@@ -107,7 +111,22 @@ class _CartListItemState extends State<CartListItem> {
             ),
           ),
           const Spacer(),
-          SvgPicture.asset('assets/icons/cross.svg'),
+          IconButton(
+            onPressed: () async {
+              final res = await FirestoreRepository()
+                  .deleteCartItem(widget.cartItem.id, widget.uid);
+              if (res == "success" && context.mounted) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Removed from cart'),
+                  ),
+                );
+              }
+            },
+            icon: SvgPicture.asset('assets/icons/cross.svg'),
+            padding: const EdgeInsets.all(0),
+          ),
         ],
       ),
     );

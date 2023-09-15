@@ -1,19 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/ui/favourite_list_item.dart';
+import 'package:furniture_app/models/favourite_item.dart';
+import 'package:furniture_app/providers/favourite_provider.dart';
 
-class FavouriteScreen extends StatefulWidget {
+class FavouriteScreen extends ConsumerStatefulWidget {
   const FavouriteScreen({super.key});
 
   @override
-  State<FavouriteScreen> createState() => _FavouriteScreenState();
+  ConsumerState<FavouriteScreen> createState() => _FavouriteScreenState();
 }
 
-class _FavouriteScreenState extends State<FavouriteScreen> {
+class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
+    final favouriteData = ref.watch(favouriteProvider);
+    User? user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
@@ -38,30 +45,35 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        children: [
-          FavouriteListItem(),
-          Divider(
-            color: dividerColor,
-          ),
-          FavouriteListItem(),
-          Divider(
-            color: dividerColor,
-          ),
-          FavouriteListItem(),
-          Divider(
-            color: dividerColor,
-          ),
-          FavouriteListItem(),
-          Divider(
-            color: dividerColor,
-          ),
-          FavouriteListItem(),
-          Divider(
-            color: dividerColor,
-          ),
-        ],
+      body: favouriteData.when(
+        data: (querySnapshot) {
+          final favouriteItems = querySnapshot.docs;
+          return favouriteItems.isEmpty
+              ? const Center(
+                  child: Text('No products in favourites.'),
+                )
+              : ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  itemCount: favouriteItems.length,
+                  itemBuilder: (context, index) {
+                    final fItem = favouriteItems[index].data();
+                    final favouriteItem = FavouriteItem.fromJson(fItem);
+                    return FavouriteListItem(
+                      favouriteItem: favouriteItem,
+                      uid: userId,
+                    );
+                  },
+                );
+        },
+        error: (error, stackTrace) {
+          return Center(
+            child: Text(error.toString()),
+          );
+        },
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CustomButton(

@@ -271,8 +271,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()));
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()));
                               },
                               child: const Text(
                                 'LOG IN',

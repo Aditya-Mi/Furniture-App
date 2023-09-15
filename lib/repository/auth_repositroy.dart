@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:furniture_app/models/user.dart' as models;
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Stream<User?> get authStateChange => _auth.idTokenChanges();
   Future<User?> signInWithEmailPassword({
@@ -32,9 +35,22 @@ class AuthRepository {
     required String password,
     required String name,
   }) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
+    models.User user =
+        models.User(email: email, name: name, uid: userCredential.user!.uid);
+    await _firebaseFirestore
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set(user.toJson());
     return userCredential;
+  }
+
+  Future<models.User> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+    DocumentSnapshot snap =
+        await _firebaseFirestore.collection('users').doc(currentUser.uid).get();
+    return models.User.fromSnap(snap);
   }
 }
 

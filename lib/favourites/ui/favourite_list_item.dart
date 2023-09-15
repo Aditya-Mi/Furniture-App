@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/models/favourite_item.dart';
+import 'package:furniture_app/repository/firestore_repository.dart';
 
-class FavouriteListItem extends StatelessWidget {
-  const FavouriteListItem({super.key});
+class FavouriteListItem extends StatefulWidget {
+  final FavouriteItem favouriteItem;
+  final String uid;
+  const FavouriteListItem(
+      {super.key, required this.favouriteItem, required this.uid});
 
+  @override
+  State<FavouriteListItem> createState() => _FavouriteListItemState();
+}
+
+class _FavouriteListItemState extends State<FavouriteListItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,8 +27,8 @@ class FavouriteListItem extends StatelessWidget {
             height: 100,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              image: const DecorationImage(
-                image: AssetImage('assets/images/lampImage.png'),
+              image: DecorationImage(
+                image: NetworkImage(widget.favouriteItem.imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -26,26 +36,28 @@ class FavouriteListItem extends StatelessWidget {
           const SizedBox(
             width: 25,
           ),
-          const SizedBox(
+          SizedBox(
             height: 100,
+            width: 100,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Chair',
-                  style: TextStyle(
+                  widget.favouriteItem.name,
+                  maxLines: 2,
+                  style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                       color: homeScreenItemTextColor),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Text(
-                  '\$ 12.00',
-                  style: TextStyle(
+                  '\$ ${widget.favouriteItem.price}',
+                  style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -60,7 +72,22 @@ class FavouriteListItem extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset('assets/icons/cross.svg'),
+                IconButton(
+                  onPressed: () async {
+                    final res = await FirestoreRepository().deleteFavouriteItem(
+                        widget.favouriteItem.id, widget.uid);
+                    if (res == "success" && context.mounted) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Removed from favourites'),
+                        ),
+                      );
+                    }
+                  },
+                  icon: SvgPicture.asset('assets/icons/cross.svg'),
+                  padding: const EdgeInsets.all(0),
+                ),
                 Container(
                   width: 34,
                   height: 34,
