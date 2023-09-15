@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/providers/auth_provider.dart';
+import 'package:furniture_app/screens/main_screen.dart';
 import 'package:furniture_app/screens/sign_up.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -31,6 +32,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           .read(authRepositoryProvider)
           .signInWithEmailPassword(
               email: _enteredEmail, password: _enteredPassword);
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user != null) {
+          if (context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(),
+              ),
+            );
+          }
+        }
+      });
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
@@ -195,9 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                         CustomButton(
-                          function: () {
-                            _submit;
-                          },
+                          function: _submit,
                           text: 'Log in',
                           height: 50,
                           width: 285,
