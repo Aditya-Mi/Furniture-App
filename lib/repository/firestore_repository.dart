@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:furniture_app/models/cart_item.dart';
-import 'package:furniture_app/models/favourite_item.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
+import 'package:furniture_app/favourites/models/favourite_item.dart';
 
 class FirestoreRepository {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;

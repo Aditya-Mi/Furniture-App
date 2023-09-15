@@ -1,4 +1,4 @@
-import 'package:furniture_app/models/product.dart';
+import 'package:furniture_app/home/models/product.dart';
 import 'package:furniture_app/repository/api_service.dart';
 import 'package:riverpod/riverpod.dart';
 

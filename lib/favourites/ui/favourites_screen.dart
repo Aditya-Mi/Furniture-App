@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/ui/favourite_list_item.dart';
-import 'package:furniture_app/models/favourite_item.dart';
+import 'package:furniture_app/favourites/models/favourite_item.dart';
 import 'package:furniture_app/providers/favourite_provider.dart';
 
 class FavouriteScreen extends ConsumerStatefulWidget {

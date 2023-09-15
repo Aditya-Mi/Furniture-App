@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/cart/ui/cart_list_item.dart';
-import 'package:furniture_app/models/cart_item.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/providers/cart_provider.dart';

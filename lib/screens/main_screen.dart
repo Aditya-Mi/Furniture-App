@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:furniture_app/cart/ui/cart_screen.dart';
 import 'package:furniture_app/favourites/ui/favourites_screen.dart';
 import 'package:furniture_app/home/ui/home_screen.dart';
-import 'package:furniture_app/screens/profile_screen.dart';
+import 'package:furniture_app/profile/ui/profile_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainScreen extends StatefulWidget {

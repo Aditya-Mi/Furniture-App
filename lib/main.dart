@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:furniture_app/providers/auth_provider.dart';
 import 'package:furniture_app/screens/on_boarding_screen.dart';
-import 'package:furniture_app/screens/login_screen.dart';
+import 'package:furniture_app/auth/ui/login_screen.dart';
 import 'package:furniture_app/screens/main_screen.dart';
 import 'package:furniture_app/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';

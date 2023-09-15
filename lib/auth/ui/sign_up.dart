@@ -4,33 +4,48 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/providers/auth_provider.dart';
+import 'package:furniture_app/auth/ui/login_screen.dart';
 import 'package:furniture_app/screens/main_screen.dart';
-import 'package:furniture_app/screens/sign_up.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _form = GlobalKey<FormState>();
   var _enteredEmail = '';
   var _enteredPassword = '';
+  var _enteredUsername = '';
+  var _enteredConfirmPassword = '';
   bool _showPassword = false;
 
-  void _submit() {
+  void _submit() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
+    if (_enteredPassword != _enteredConfirmPassword) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Confirm Password should be same as Password'),
+          ),
+        );
+      }
+      return;
+    }
     _form.currentState!.save();
     try {
-      final userCredential = ref
+      final userCredential = await ref
           .read(authRepositoryProvider)
-          .signInWithEmailPassword(
-              email: _enteredEmail, password: _enteredPassword);
+          .signUpWithEmailPassword(
+              email: _enteredEmail,
+              password: _enteredPassword,
+              name: _enteredUsername);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
           if (context.mounted) {
@@ -48,16 +63,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.message ?? 'Authentication Faild'),
+            content: Text(e.message ?? 'Authentication failed'),
           ),
         );
       }
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -91,20 +101,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.04,
               ),
               const Text(
-                'Hello!',
-                style: TextStyle(
-                    fontSize: 30,
-                    color: Color.fromRGBO(144, 144, 144, 1),
-                    fontFamily: 'Merriweather'),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-              const Text(
-                'WELCOME BACK',
+                'WELCOME',
                 style: TextStyle(
                     fontSize: 24,
                     color: Colors.black,
@@ -116,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               Container(
                 alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.53,
+                height: MediaQuery.of(context).size.height * 0.67,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -140,8 +140,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         TextFormField(
-                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            hintText: 'Name',
+                            hintStyle: TextStyle(
+                                color: hintTextColor,
+                                fontSize: 14,
+                                fontFamily: 'NunitoSans'),
+                          ),
+                          enableSuggestions: false,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().length < 4) {
+                              return 'Please enter at least 4 characters long';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredUsername = value!;
+                          },
+                        ),
+                        TextFormField(
                           keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           decoration: const InputDecoration(
                             hintText: 'Email',
@@ -163,7 +184,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           },
                         ),
                         TextFormField(
-                          keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: const TextStyle(
@@ -184,6 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                             ),
                           ),
+                          obscureText: !_showPassword,
                           validator: (value) {
                             if (value == null || value.trim().length < 6) {
                               return 'Password must be atleast 6 characters long.';
@@ -193,42 +214,80 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           onSaved: (value) {
                             _enteredPassword = value!;
                           },
-                          obscureText: !_showPassword,
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontFamily: 'NunitoSans',
-                                fontWeight: FontWeight.w600),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Confirm Password',
+                            hintStyle: const TextStyle(
+                              color: hintTextColor,
+                              fontSize: 14,
+                              fontFamily: 'NunitoSans',
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showPassword = !_showPassword;
+                                });
+                              },
+                              icon: Icon(
+                                !_showPassword
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
+                            ),
                           ),
+                          obscureText: !_showPassword,
+                          validator: (value) {
+                            if (value == null || value.trim().length < 6) {
+                              return 'Password must be atleast 6 characters long.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _enteredPassword = value!;
+                          },
                         ),
                         CustomButton(
                           function: _submit,
-                          text: 'Log in',
+                          text: 'Sign up',
                           height: 50,
                           width: 285,
                           fontFamily: 'NunitoSans',
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignUpScreen()));
-                          },
-                          child: const Text(
-                            'SIGN UP',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Already have account?',
+                              style: TextStyle(
                                 fontFamily: 'NunitoSans',
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: Color.fromARGB(255, 128, 128, 128),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 2,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen()));
+                              },
+                              child: const Text(
+                                'LOG IN',
+                                style: TextStyle(
+                                  fontFamily: 'NunitoSans',
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ),

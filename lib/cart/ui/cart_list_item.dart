@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
-import 'package:furniture_app/models/cart_item.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
 class CartListItem extends StatefulWidget {

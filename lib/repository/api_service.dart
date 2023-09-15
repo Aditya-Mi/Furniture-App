@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:furniture_app/models/product.dart';
+import 'package:furniture_app/home/models/product.dart';
 
 class ApiService {
   String endpoint =

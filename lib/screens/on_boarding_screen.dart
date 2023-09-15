@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
-import 'package:furniture_app/screens/login_screen.dart';
+import 'package:furniture_app/auth/ui/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreen extends StatefulWidget {

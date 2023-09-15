@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
-import 'package:furniture_app/models/cart_item.dart';
-import 'package:furniture_app/models/favourite_item.dart';
-import 'package:furniture_app/models/product.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
+import 'package:furniture_app/favourites/models/favourite_item.dart';
+import 'package:furniture_app/home/models/product.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
 class ItemDetailsScreen extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/home/ui/item_details_screen.dart';
-import 'package:furniture_app/models/product.dart';
+import 'package:furniture_app/home/models/product.dart';
 
 class GridViewItem extends StatelessWidget {
   final Product product;
