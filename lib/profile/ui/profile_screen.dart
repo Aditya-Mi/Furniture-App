@@ -45,7 +45,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: signOut,
+            onPressed: () async {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    shape: const BeveledRectangleBorder(),
+                    title: const Text('Log Out'),
+                    content: const Text('Are you sure?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          signOut();
+                        },
+                        child: const Text('Log out'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
             icon: const Icon(Icons.logout),
           ),
         ],

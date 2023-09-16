@@ -35,7 +35,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         ),
         body: cartData.when(
           data: (querySnapshot) {
-            final cartItems = querySnapshot.docs;
+            final cartItems = querySnapshot.snapshot.docs;
+            final cartTotal = querySnapshot.cartTotal;
             return cartItems.isEmpty
                 ? const Center(
                     child: Text('No products in cart.'),
@@ -63,10 +64,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(
+                                const Text(
                                   'Total:',
                                   style: TextStyle(
                                     fontFamily: 'NunitoSans',
@@ -76,8 +77,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '\$ 95.00',
-                                  style: TextStyle(
+                                  '\$ $cartTotal',
+                                  style: const TextStyle(
                                     fontFamily: 'NunitoSans',
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

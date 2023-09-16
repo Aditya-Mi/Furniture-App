@@ -94,7 +94,7 @@ class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
                   height: 34,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: iconBackground),
+                      color: Colors.black),
                   child: IconButton(
                     onPressed: () async {
                       if (isInCart) {
@@ -113,7 +113,10 @@ class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
                                 imageUrl: widget.favouriteItem.imageUrl));
                       }
                     },
-                    icon: SvgPicture.asset('assets/icons/bag.svg'),
+                    icon: SvgPicture.asset(
+                      'assets/icons/cart.svg',
+                      color: iconBackground,
+                    ),
                   ),
                 ),
               ],

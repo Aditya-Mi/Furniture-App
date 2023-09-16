@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
@@ -98,64 +97,13 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                     SizedBox(
                       height: h * 0.0123,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          '\$ ${widget.product.price}',
-                          style: const TextStyle(
-                              fontFamily: 'NunitoSans',
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: homeScreenItemPriceColor),
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          width: 115,
-                          child: Row(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: iconBackground),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  padding: const EdgeInsets.all(0),
-                                  icon: const Icon(
-                                    Icons.add,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              const Text(
-                                '01',
-                                style: TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
-                                    fontSize: 18),
-                              ),
-                              const Spacer(),
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: iconBackground),
-                                child: IconButton(
-                                  onPressed: () {},
-                                  padding: const EdgeInsets.all(0),
-                                  icon: SvgPicture.asset(
-                                      'assets/icons/minus.svg'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    Text(
+                      '\$ ${widget.product.price}',
+                      style: const TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: homeScreenItemPriceColor),
                     ),
                     SizedBox(
                       height: h * 0.0123,

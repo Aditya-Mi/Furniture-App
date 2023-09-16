@@ -6,14 +6,31 @@ import 'package:furniture_app/providers/firestore_provider.dart';
 import 'package:furniture_app/providers/user_provider.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
-final cartItemsProvider = StreamProvider((ref) {
+final cartItemsProvider = StreamProvider<CartSnapshot>((ref) {
   final user = ref.watch(userProvider).value;
-  return FirebaseFirestore.instance
+  final cartItemStream = FirebaseFirestore.instance
       .collection('users')
       .doc(user!.uid)
       .collection('cart')
       .snapshots();
+  final cartStream = cartItemStream.map((snapshot) {
+    double cartTotal = 0.0;
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final price = data["price"] as double;
+      final quantity = data["quantity"] as int;
+      cartTotal += price * quantity;
+    }
+    return CartSnapshot(snapshot, cartTotal);
+  });
+  return cartStream;
 });
+
+class CartSnapshot {
+  final QuerySnapshot<Map<String, dynamic>> snapshot;
+  final double cartTotal;
+  CartSnapshot(this.snapshot, this.cartTotal);
+}
 
 class CartNotifier extends StateNotifier<CartItemState> {
   final FirestoreRepository _firestoreRepository;
