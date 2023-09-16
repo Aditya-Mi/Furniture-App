@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
+import 'package:furniture_app/providers/favourite_provider.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
-class FavouriteListItem extends StatefulWidget {
+class FavouriteListItem extends ConsumerStatefulWidget {
   final FavouriteItem favouriteItem;
   final String uid;
   const FavouriteListItem(
       {super.key, required this.favouriteItem, required this.uid});
 
   @override
-  State<FavouriteListItem> createState() => _FavouriteListItemState();
+  ConsumerState<FavouriteListItem> createState() => _FavouriteListItemState();
 }
 
-class _FavouriteListItemState extends State<FavouriteListItem> {
+class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,16 +77,10 @@ class _FavouriteListItemState extends State<FavouriteListItem> {
               children: [
                 IconButton(
                   onPressed: () async {
-                    final res = await FirestoreRepository().deleteFavouriteItem(
-                        widget.favouriteItem.id, widget.uid);
-                    if (res == "success" && context.mounted) {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Removed from favourites'),
-                        ),
-                      );
-                    }
+                    ref.read(favouritesProvider.notifier).toggleFavouriteStatus(
+                          widget.favouriteItem.id,
+                          widget.uid,
+                        );
                   },
                   icon: SvgPicture.asset('assets/icons/cross.svg'),
                   padding: const EdgeInsets.all(0),
@@ -95,7 +92,23 @@ class _FavouriteListItemState extends State<FavouriteListItem> {
                       borderRadius: BorderRadius.circular(10),
                       color: iconBackground),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final bool = await FirestoreRepository()
+                          .isInCart(widget.favouriteItem.id, widget.uid);
+                      if (bool) {
+                        await FirestoreRepository().addQuantityCartItem(
+                            widget.favouriteItem.id, widget.uid);
+                      } else {
+                        await FirestoreRepository().addCartItem(
+                            CartItem(
+                                id: widget.favouriteItem.id,
+                                name: widget.favouriteItem.name,
+                                price: widget.favouriteItem.price,
+                                quantity: 1,
+                                imageUrl: widget.favouriteItem.imageUrl),
+                            widget.uid);
+                      }
+                    },
                     icon: SvgPicture.asset('assets/icons/bag.svg'),
                   ),
                 ),

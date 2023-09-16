@@ -38,12 +38,14 @@ class _CartListItemState extends State<CartListItem> {
           ),
           SizedBox(
             height: 100,
+            width: MediaQuery.of(context).size.width * 0.373,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   widget.cartItem.name,
+                  maxLines: 2,
                   style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontWeight: FontWeight.w600,
@@ -74,7 +76,10 @@ class _CartListItemState extends State<CartListItem> {
                             borderRadius: BorderRadius.circular(10),
                             color: iconBackground),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await FirestoreRepository().addQuantityCartItem(
+                                widget.cartItem.id, widget.uid);
+                          },
                           padding: const EdgeInsets.all(0),
                           icon: const Icon(
                             Icons.add,
@@ -84,7 +89,7 @@ class _CartListItemState extends State<CartListItem> {
                       ),
                       const Spacer(),
                       Text(
-                        '${widget.cartItem.price}',
+                        '${widget.cartItem.quantity}',
                         style: const TextStyle(
                             fontFamily: 'NunitoSans',
                             fontWeight: FontWeight.w600,
@@ -99,7 +104,13 @@ class _CartListItemState extends State<CartListItem> {
                             borderRadius: BorderRadius.circular(10),
                             color: iconBackground),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: widget.cartItem.quantity == 1
+                              ? null
+                              : () async {
+                                  await FirestoreRepository()
+                                      .subtractQuantityCartItem(
+                                          widget.cartItem.id, widget.uid);
+                                },
                           padding: const EdgeInsets.all(0),
                           icon: SvgPicture.asset('assets/icons/minus.svg'),
                         ),

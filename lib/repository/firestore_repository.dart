@@ -21,6 +21,40 @@ class FirestoreRepository {
     return res;
   }
 
+  Future<void> addQuantityCartItem(String id, String uid) async {
+    try {
+      final cartItemRef = _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(id);
+      cartItemRef.get().then((documentSnapshot) {
+        final currentQuantity = documentSnapshot.data()!["quantity"];
+        final newQuantity = currentQuantity + 1;
+        cartItemRef.update({"quantity": newQuantity});
+      });
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<void> subtractQuantityCartItem(String id, String uid) async {
+    try {
+      final cartItemRef = _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(id);
+      cartItemRef.get().then((documentSnapshot) {
+        final currentQuantity = documentSnapshot.data()!["quantity"];
+        final newQuantity = currentQuantity - 1;
+        cartItemRef.update({"quantity": newQuantity});
+      });
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
   Future<String> addFavouriteItem(
       FavouriteItem favouriteItem, String uid) async {
     String res = "Some error occurred";
@@ -68,5 +102,36 @@ class FirestoreRepository {
       res = err.toString();
     }
     return res;
+  }
+
+  Future<bool> isInCart(String productId, String uid) async {
+    try {
+      final isInCart = await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .doc(productId)
+          .get()
+          .then((doc) => doc.exists);
+      return isInCart;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<bool> isInFavourites(
+      {required String productId, required String uid}) async {
+    try {
+      final isInFavourites = await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('favourite')
+          .doc(productId)
+          .get()
+          .then((doc) => doc.exists);
+      return isInFavourites;
+    } catch (e) {
+      throw e.toString();
+    }
   }
 }

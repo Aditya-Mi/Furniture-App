@@ -1,25 +1,26 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
 import 'package:furniture_app/home/models/product.dart';
+import 'package:furniture_app/providers/cart_provider.dart';
+import 'package:furniture_app/providers/favourite_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
-class ItemDetailsScreen extends StatefulWidget {
+class ItemDetailsScreen extends ConsumerStatefulWidget {
   final Product product;
   const ItemDetailsScreen({super.key, required this.product});
 
   @override
-  State<ItemDetailsScreen> createState() => _ItemDetailsScreenState();
+  ConsumerState<ItemDetailsScreen> createState() => _ItemDetailsScreenState();
 }
 
-class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
-  void _addToCart() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
+class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
+  void _addToCart(String uid) async {
     double price = (widget.product.price).toDouble();
     String res = await FirestoreRepository().addCartItem(
         CartItem(
@@ -28,7 +29,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             price: price,
             quantity: 1,
             imageUrl: widget.product.images[0]),
-        userId);
+        uid);
     if (res == "success" && context.mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -39,9 +40,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     }
   }
 
-  void _addToFavourite() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
+  void _addToFavourite(String uid) async {
     double price = (widget.product.price).toDouble();
     String res = await FirestoreRepository().addFavouriteItem(
         FavouriteItem(
@@ -49,7 +48,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
             name: widget.product.name,
             price: price,
             imageUrl: widget.product.images[0]),
-        userId);
+        uid);
     if (res == "success" && context.mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +63,13 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   Widget build(BuildContext context) {
     final buttonWidth = MediaQuery.of(context).size.width - 130;
     final h = MediaQuery.of(context).size.height;
+    final user = ref.read(userProvider).value;
+
+    ref
+        .read(favouritesProvider.notifier)
+        .checkIsInFavourites(widget.product.id, user!.uid);
+    final isInFavourite = ref.watch(favouritesProvider);
+    final isInCart = ref.watch(isInCartProvider(widget.product.id)).value;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -249,20 +255,57 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: iconBackground),
-                          child: IconButton(
-                            onPressed: _addToFavourite,
-                            icon: const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.black,
-                            ),
-                          ),
+                          child: isInFavourite
+                              ? IconButton(
+                                  onPressed: () async {
+                                    ref
+                                        .read(favouritesProvider.notifier)
+                                        .toggleFavouriteStatus(
+                                          widget.product.id,
+                                          user.uid,
+                                        );
+                                  },
+                                  icon: const Icon(
+                                    Icons.bookmark,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    ref
+                                        .read(favouritesProvider.notifier)
+                                        .toggleFavouriteStatus(
+                                            widget.product.id,
+                                            user.uid,
+                                            FavouriteItem(
+                                                id: widget.product.id,
+                                                name: widget.product.name,
+                                                price: (widget.product.price)
+                                                    .toDouble(),
+                                                imageUrl:
+                                                    widget.product.images[0]));
+                                  },
+                                  icon: const Icon(
+                                    Icons.bookmark_border,
+                                    color: Colors.black,
+                                  ),
+                                ),
                         ),
-                        CustomButton(
-                            function: _addToCart,
-                            text: 'Add to cart',
-                            height: 60,
-                            width: buttonWidth,
-                            fontFamily: 'NunitoSans')
+                        isInCart!
+                            ? CustomButton(
+                                function: () {},
+                                text: 'View cart',
+                                height: 60,
+                                width: buttonWidth,
+                                fontFamily: 'NunitoSans')
+                            : CustomButton(
+                                function: () {
+                                  return _addToCart(user.uid);
+                                },
+                                text: 'Add to cart',
+                                height: 60,
+                                width: buttonWidth,
+                                fontFamily: 'NunitoSans')
                       ],
                     ),
                   ],

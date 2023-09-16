@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +6,7 @@ import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/ui/favourite_list_item.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
 import 'package:furniture_app/providers/favourite_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 
 class FavouriteScreen extends ConsumerStatefulWidget {
   const FavouriteScreen({super.key});
@@ -18,9 +18,8 @@ class FavouriteScreen extends ConsumerStatefulWidget {
 class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
-    final favouriteData = ref.watch(favouriteProvider);
-    User? user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
+    final favouriteData = ref.watch(favouriteItemsProvider);
+    final user = ref.read(userProvider).value;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
@@ -61,7 +60,7 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
                     final favouriteItem = FavouriteItem.fromJson(fItem);
                     return FavouriteListItem(
                       favouriteItem: favouriteItem,
-                      uid: userId,
+                      uid: user!.uid,
                     );
                   },
                 );

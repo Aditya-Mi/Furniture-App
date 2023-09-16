@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/cart/ui/cart_list_item.dart';
@@ -6,6 +5,7 @@ import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/providers/cart_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -18,8 +18,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cartData = ref.watch(cartProvider);
-    User? user = FirebaseAuth.instance.currentUser;
-    final userId = user!.uid;
+    final user = ref.read(userProvider).value;
     return Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
@@ -53,7 +52,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             final cartItem = CartItem.fromJson(cItem);
                             return CartListItem(
                               cartItem: cartItem,
-                              uid: userId,
+                              uid: user!.uid,
                             );
                           },
                         ),

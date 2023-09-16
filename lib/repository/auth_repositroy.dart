@@ -46,10 +46,9 @@ class AuthRepository {
     return userCredential;
   }
 
-  Future<models.User> getUserDetails() async {
-    User currentUser = _auth.currentUser!;
+  Future<models.User> getUserDetails(String uid) async {
     DocumentSnapshot snap =
-        await _firebaseFirestore.collection('users').doc(currentUser.uid).get();
+        await _firebaseFirestore.collection('users').doc(uid).get();
     return models.User.fromSnap(snap);
   }
 }
