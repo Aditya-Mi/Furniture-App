@@ -29,7 +29,7 @@ class FirestoreRepository {
           .collection('cart')
           .doc(id);
       cartItemRef.get().then((documentSnapshot) {
-        final currentQuantity = documentSnapshot.data()!["quantity"];
+        final currentQuantity = documentSnapshot.data()?["quantity"] ?? 0;
         final newQuantity = currentQuantity + 1;
         cartItemRef.update({"quantity": newQuantity});
       });
@@ -104,7 +104,8 @@ class FirestoreRepository {
     return res;
   }
 
-  Future<bool> isInCart(String productId, String uid) async {
+  Future<bool> isInCart(
+      {required String productId, required String uid}) async {
     try {
       final isInCart = await _firebaseFirestore
           .collection('users')

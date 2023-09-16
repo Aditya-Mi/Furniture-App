@@ -33,7 +33,9 @@ class FavouritesNotifier extends StateNotifier<bool> {
     if (isFavourite) {
       await _firestoreRepository.deleteFavouriteItem(productId, uid);
     } else {
-      await _firestoreRepository.addFavouriteItem(favouriteItem!, uid);
+      if (favouriteItem != null) {
+        await _firestoreRepository.addFavouriteItem(favouriteItem, uid);
+      }
     }
     isFavourite = !isFavourite;
     state = isFavourite;
@@ -41,7 +43,7 @@ class FavouritesNotifier extends StateNotifier<bool> {
 }
 
 final favouritesProvider =
-    StateNotifierProvider.autoDispose<FavouritesNotifier, bool>((ref) {
+    StateNotifierProvider<FavouritesNotifier, bool>((ref) {
   final firestoreRepository = ref.watch(firestoreProvider);
   return FavouritesNotifier(firestoreRepository);
 });

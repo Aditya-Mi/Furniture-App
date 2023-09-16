@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
-import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
 import 'package:furniture_app/home/models/product.dart';
 import 'package:furniture_app/providers/cart_provider.dart';
 import 'package:furniture_app/providers/favourite_provider.dart';
 import 'package:furniture_app/providers/user_provider.dart';
-import 'package:furniture_app/repository/firestore_repository.dart';
 
 class ItemDetailsScreen extends ConsumerStatefulWidget {
   final Product product;
@@ -20,56 +19,22 @@ class ItemDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
-  void _addToCart(String uid) async {
-    double price = (widget.product.price).toDouble();
-    String res = await FirestoreRepository().addCartItem(
-        CartItem(
-            id: widget.product.id,
-            name: widget.product.name,
-            price: price,
-            quantity: 1,
-            imageUrl: widget.product.images[0]),
-        uid);
-    if (res == "success" && context.mounted) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Added to cart'),
-        ),
-      );
-    }
-  }
-
-  void _addToFavourite(String uid) async {
-    double price = (widget.product.price).toDouble();
-    String res = await FirestoreRepository().addFavouriteItem(
-        FavouriteItem(
-            id: widget.product.id,
-            name: widget.product.name,
-            price: price,
-            imageUrl: widget.product.images[0]),
-        uid);
-    if (res == "success" && context.mounted) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Added to favourites'),
-        ),
-      );
-    }
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final buttonWidth = MediaQuery.of(context).size.width - 130;
     final h = MediaQuery.of(context).size.height;
-    final user = ref.read(userProvider).value;
-
+    final user = ref.watch(userProvider).value;
     ref
         .read(favouritesProvider.notifier)
         .checkIsInFavourites(widget.product.id, user!.uid);
+    ref.read(cartProvider.notifier).checkIsInCart(widget.product.id, user.uid);
     final isInFavourite = ref.watch(favouritesProvider);
-    final isInCart = ref.watch(isInCartProvider(widget.product.id)).value;
+    final isInCart = ref.watch(cartProvider).isInCart;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -291,7 +256,7 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                                   ),
                                 ),
                         ),
-                        isInCart!
+                        isInCart
                             ? CustomButton(
                                 function: () {},
                                 text: 'View cart',
@@ -299,8 +264,19 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                                 width: buttonWidth,
                                 fontFamily: 'NunitoSans')
                             : CustomButton(
-                                function: () {
-                                  return _addToCart(user.uid);
+                                function: () async {
+                                  return ref
+                                      .read(cartProvider.notifier)
+                                      .addToCart(
+                                          user.uid,
+                                          CartItem(
+                                              id: widget.product.id,
+                                              name: widget.product.name,
+                                              price: (widget.product.price)
+                                                  .toDouble(),
+                                              quantity: 1,
+                                              imageUrl:
+                                                  widget.product.images[0]));
                                 },
                                 text: 'Add to cart',
                                 height: 60,

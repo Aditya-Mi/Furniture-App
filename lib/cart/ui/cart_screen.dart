@@ -17,7 +17,7 @@ class CartScreen extends ConsumerStatefulWidget {
 class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
-    final cartData = ref.watch(cartProvider);
+    final cartData = ref.watch(cartItemsProvider);
     final user = ref.read(userProvider).value;
     return Scaffold(
         appBar: AppBar(

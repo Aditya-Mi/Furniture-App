@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/cart/models/cart_item.dart';
+import 'package:furniture_app/providers/cart_provider.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
-class CartListItem extends StatefulWidget {
+class CartListItem extends ConsumerStatefulWidget {
   final CartItem cartItem;
   final String uid;
   const CartListItem({super.key, required this.cartItem, required this.uid});
 
   @override
-  State<CartListItem> createState() => _CartListItemState();
+  ConsumerState<CartListItem> createState() => _CartListItemState();
 }
 
-class _CartListItemState extends State<CartListItem> {
+class _CartListItemState extends ConsumerState<CartListItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,7 +79,7 @@ class _CartListItemState extends State<CartListItem> {
                             color: iconBackground),
                         child: IconButton(
                           onPressed: () async {
-                            await FirestoreRepository().addQuantityCartItem(
+                            ref.read(cartProvider.notifier).addQuantityToCart(
                                 widget.cartItem.id, widget.uid);
                           },
                           padding: const EdgeInsets.all(0),
@@ -107,8 +109,9 @@ class _CartListItemState extends State<CartListItem> {
                           onPressed: widget.cartItem.quantity == 1
                               ? null
                               : () async {
-                                  await FirestoreRepository()
-                                      .subtractQuantityCartItem(
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .subtractQuantityToCart(
                                           widget.cartItem.id, widget.uid);
                                 },
                           padding: const EdgeInsets.all(0),

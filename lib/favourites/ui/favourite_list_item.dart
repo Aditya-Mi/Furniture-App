@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
+import 'package:furniture_app/providers/cart_provider.dart';
 import 'package:furniture_app/providers/favourite_provider.dart';
-import 'package:furniture_app/repository/firestore_repository.dart';
 
 class FavouriteListItem extends ConsumerStatefulWidget {
   final FavouriteItem favouriteItem;
@@ -20,6 +20,10 @@ class FavouriteListItem extends ConsumerStatefulWidget {
 class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
   @override
   Widget build(BuildContext context) {
+    ref
+        .read(cartProvider.notifier)
+        .checkIsInCart(widget.favouriteItem.id, widget.uid);
+    bool isInCart = ref.watch(cartProvider).isInCart;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -76,7 +80,7 @@ class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () async {
+                  onPressed: () {
                     ref.read(favouritesProvider.notifier).toggleFavouriteStatus(
                           widget.favouriteItem.id,
                           widget.uid,
@@ -93,20 +97,20 @@ class _FavouriteListItemState extends ConsumerState<FavouriteListItem> {
                       color: iconBackground),
                   child: IconButton(
                     onPressed: () async {
-                      final bool = await FirestoreRepository()
-                          .isInCart(widget.favouriteItem.id, widget.uid);
-                      if (bool) {
-                        await FirestoreRepository().addQuantityCartItem(
-                            widget.favouriteItem.id, widget.uid);
+                      if (isInCart) {
+                        return ref
+                            .read(cartProvider.notifier)
+                            .addQuantityToCart(
+                                widget.favouriteItem.id, widget.uid);
                       } else {
-                        await FirestoreRepository().addCartItem(
+                        return ref.read(cartProvider.notifier).addToCart(
+                            widget.uid,
                             CartItem(
                                 id: widget.favouriteItem.id,
                                 name: widget.favouriteItem.name,
                                 price: widget.favouriteItem.price,
                                 quantity: 1,
-                                imageUrl: widget.favouriteItem.imageUrl),
-                            widget.uid);
+                                imageUrl: widget.favouriteItem.imageUrl));
                       }
                     },
                     icon: SvgPicture.asset('assets/icons/bag.svg'),

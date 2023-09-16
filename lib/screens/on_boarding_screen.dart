@@ -69,11 +69,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               function: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('onBoarding', false);
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                );
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
+                }
               },
               text: 'Get Started',
               height: 54,
