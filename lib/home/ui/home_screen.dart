@@ -23,6 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedCategory = ref.watch(selectedCategoryProvider);
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
@@ -100,21 +101,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                          child: listItem('Chair', 'assets/icons/chair.svg')),
+                      listItem('Chair', 'assets/icons/chair.svg', () {
+                        if (selectedCategory == 'chair') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'chair';
+                        }
+                      }, selectedCategory),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                          child: listItem('Table', 'assets/icons/table.svg')),
+                      listItem('Table', 'assets/icons/table.svg', () {
+                        if (selectedCategory == 'table') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'table';
+                        }
+                      }, selectedCategory),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                          child: listItem(
-                              'Armchair', 'assets/icons/armchair.svg')),
+                      listItem('Armchair', 'assets/icons/armchair.svg', () {
+                        if (selectedCategory == 'armchair') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'armchair';
+                        }
+                      }, selectedCategory),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                          child: listItem('Bed', 'assets/icons/bed.svg')),
+                      listItem('Bed', 'assets/icons/bed.svg', () {
+                        if (selectedCategory == 'bed') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'bed';
+                        }
+                      }, selectedCategory),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                          child: listItem('Lamp', 'assets/icons/lamp.svg')),
+                      listItem('Lamp', 'assets/icons/lamp.svg', () {
+                        if (selectedCategory == 'lamp') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'lamp';
+                        }
+                      }, selectedCategory),
                     ],
                   ),
                 ),
@@ -154,7 +189,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         }));
   }
 
-  Widget listItem(String name, String imgPath) {
+  Widget listItem(String name, String imgPath, VoidCallback function,
+      String selectedCategory) {
     return SizedBox(
       width: 65,
       child: Column(
@@ -163,12 +199,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: itemBackground,
+              color: selectedCategory == name.toLowerCase()
+                  ? Colors.black
+                  : itemBackground,
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset(imgPath),
+              onPressed: function,
+              icon: SvgPicture.asset(
+                imgPath,
+                color: selectedCategory == name.toLowerCase()
+                    ? Colors.white
+                    : hintTextColor,
+              ),
             ),
           ),
           const SizedBox(

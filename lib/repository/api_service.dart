@@ -5,9 +5,18 @@ class ApiService {
   String endpoint =
       'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture';
   final dio = Dio();
-  Future<List<Product>> getProduct() async {
+  Future<List<Product>> getProduct(String category) async {
     try {
-      Response<dynamic> response = await dio.get(endpoint);
+      late Response<dynamic> response;
+      if (category == '') {
+        endpoint =
+            'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture';
+        response = await dio.get(endpoint);
+      } else {
+        endpoint =
+            'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture,$category';
+        response = await dio.get(endpoint);
+      }
       if (response.statusCode != 200) {
         throw 'An unexpected error occurred ';
       }

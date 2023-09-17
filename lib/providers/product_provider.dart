@@ -6,5 +6,8 @@ final productApiProvider = Provider((ref) => ApiService());
 
 final productFilteredDataProvider = FutureProvider<List<Product>>((ref) {
   final productApi = ref.watch(productApiProvider);
-  return productApi.getProduct();
+  final category = ref.watch(selectedCategoryProvider);
+  return productApi.getProduct(category);
 });
+
+final selectedCategoryProvider = StateProvider<String>((ref) => '');
