@@ -20,17 +20,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   var _enteredPassword = '';
   bool _showPassword = false;
 
-  void _submit() {
+  void _submit() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
     _form.currentState!.save();
     try {
-      final userCredential = ref
-          .read(authRepositoryProvider)
-          .signInWithEmailPassword(
-              email: _enteredEmail, password: _enteredPassword);
+      await ref.read(authRepositoryProvider).signInWithEmailPassword(
+          email: _enteredEmail, password: _enteredPassword);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
           if (context.mounted) {

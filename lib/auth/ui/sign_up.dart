@@ -40,12 +40,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
     _form.currentState!.save();
     try {
-      final userCredential = await ref
-          .read(authRepositoryProvider)
-          .signUpWithEmailPassword(
-              email: _enteredEmail,
-              password: _enteredPassword,
-              name: _enteredUsername);
+      await ref.read(authRepositoryProvider).signUpWithEmailPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+          name: _enteredUsername);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
           if (context.mounted) {

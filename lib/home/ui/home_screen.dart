@@ -5,6 +5,7 @@ import 'package:furniture_app/home/ui/grid_view_item.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/providers/product_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 
 final dio = Dio();
 
@@ -23,6 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(userProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
     return Scaffold(
         backgroundColor: backgroundColor,
@@ -69,37 +71,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     padding:
                         const EdgeInsets.only(left: 15, top: 15, bottom: 15),
                     children: [
-                      GestureDetector(
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.star,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            const Text(
-                              'Popular',
-                              style: TextStyle(
-                                fontFamily: 'NunitoSans',
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      listItem('Popular', 'assets/icons/chair.svg', () {
+                        if (selectedCategory == 'popular') {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              '';
+                        } else {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              'popular';
+                        }
+                      }, selectedCategory),
                       const SizedBox(width: 10),
                       listItem('Chair', 'assets/icons/chair.svg', () {
                         if (selectedCategory == 'chair') {
@@ -206,12 +186,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             child: IconButton(
               onPressed: function,
-              icon: SvgPicture.asset(
-                imgPath,
-                color: selectedCategory == name.toLowerCase()
-                    ? Colors.white
-                    : hintTextColor,
-              ),
+              icon: name == 'Popular'
+                  ? Icon(
+                      selectedCategory == name.toLowerCase()
+                          ? Icons.star
+                          : Icons.star_border,
+                      color: selectedCategory == name.toLowerCase()
+                          ? backgroundColor
+                          : hintTextColor,
+                    )
+                  : SvgPicture.asset(
+                      imgPath,
+                      color: selectedCategory == name.toLowerCase()
+                          ? Colors.white
+                          : hintTextColor,
+                    ),
             ),
           ),
           const SizedBox(

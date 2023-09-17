@@ -79,11 +79,9 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                 ),
               ),
               Container(
-                height: h * 0.44,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -95,7 +93,7 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                           color: homeScreenItemPriceColor),
                     ),
                     SizedBox(
-                      height: h * 0.0123,
+                      height: h * 0.0103,
                     ),
                     Text(
                       '\$ ${widget.product.price}',
@@ -106,7 +104,7 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                           color: homeScreenItemPriceColor),
                     ),
                     SizedBox(
-                      height: h * 0.0123,
+                      height: h * 0.0103,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -141,7 +139,7 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                       ],
                     ),
                     SizedBox(
-                      height: h * 0.0184,
+                      height: h * 0.0104,
                     ),
                     SingleChildScrollView(
                       scrollDirection: Axis.vertical,
@@ -158,6 +156,9 @@ class _ItemDetailsScreenState extends ConsumerState<ItemDetailsScreen> {
                           textAlign: TextAlign.justify,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: h * 0.0104,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
