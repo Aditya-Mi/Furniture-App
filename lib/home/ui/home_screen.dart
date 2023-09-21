@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/home/ui/category_list_item.dart';
 import 'package:furniture_app/home/ui/grid_view_item.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:furniture_app/home/ui/grid_view_item_shimmer.dart';
 import 'package:furniture_app/providers/product_provider.dart';
 import 'package:furniture_app/providers/user_provider.dart';
 
@@ -20,6 +22,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void toggleCategory(String selectedCategory, String category) {
+    if (selectedCategory == category) {
+      ref.read(selectedCategoryProvider.notifier).state = '';
+    } else {
+      ref.read(selectedCategoryProvider.notifier).state = category;
+    }
   }
 
   @override
@@ -71,65 +81,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     padding:
                         const EdgeInsets.only(left: 15, top: 15, bottom: 15),
                     children: [
-                      listItem('Popular', 'assets/icons/chair.svg', () {
-                        if (selectedCategory == 'popular') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'popular';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Popular',
+                          imgPath: 'assets/icons/chair.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'popular');
+                          },
+                          selectedCategory: selectedCategory),
                       const SizedBox(width: 10),
-                      listItem('Chair', 'assets/icons/chair.svg', () {
-                        if (selectedCategory == 'chair') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'chair';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Chair',
+                          imgPath: 'assets/icons/chair.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'chair');
+                          },
+                          selectedCategory: selectedCategory),
                       const SizedBox(width: 10),
-                      listItem('Table', 'assets/icons/table.svg', () {
-                        if (selectedCategory == 'table') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'table';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Table',
+                          imgPath: 'assets/icons/table.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'table');
+                          },
+                          selectedCategory: selectedCategory),
                       const SizedBox(width: 10),
-                      listItem('Armchair', 'assets/icons/armchair.svg', () {
-                        if (selectedCategory == 'armchair') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'armchair';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Armchair',
+                          imgPath: 'assets/icons/armchair.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'armchair');
+                          },
+                          selectedCategory: selectedCategory),
                       const SizedBox(width: 10),
-                      listItem('Bed', 'assets/icons/bed.svg', () {
-                        if (selectedCategory == 'bed') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'bed';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Bed',
+                          imgPath: 'assets/icons/bed.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'bed');
+                          },
+                          selectedCategory: selectedCategory),
                       const SizedBox(width: 10),
-                      listItem('Lamp', 'assets/icons/lamp.svg', () {
-                        if (selectedCategory == 'lamp') {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              '';
-                        } else {
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              'lamp';
-                        }
-                      }, selectedCategory),
+                      CategoryListItem(
+                          name: 'Lamp',
+                          imgPath: 'assets/icons/lamp.svg',
+                          function: () {
+                            toggleCategory(selectedCategory, 'lamp');
+                          },
+                          selectedCategory: selectedCategory),
                     ],
                   ),
                 ),
@@ -163,60 +161,79 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Text(error.toString()),
           );
         }, loading: () {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return SizedBox(
+            height: double.infinity,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 110,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding:
+                        const EdgeInsets.only(left: 15, top: 15, bottom: 15),
+                    children: [
+                      CategoryListItem(
+                          name: 'Popular',
+                          imgPath: 'assets/icons/chair.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                      const SizedBox(width: 10),
+                      CategoryListItem(
+                          name: 'Chair',
+                          imgPath: 'assets/icons/chair.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                      const SizedBox(width: 10),
+                      CategoryListItem(
+                          name: 'Table',
+                          imgPath: 'assets/icons/table.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                      const SizedBox(width: 10),
+                      CategoryListItem(
+                          name: 'Armchair',
+                          imgPath: 'assets/icons/armchair.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                      const SizedBox(width: 10),
+                      CategoryListItem(
+                          name: 'Bed',
+                          imgPath: 'assets/icons/bed.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                      const SizedBox(width: 10),
+                      CategoryListItem(
+                          name: 'Lamp',
+                          imgPath: 'assets/icons/lamp.svg',
+                          function: () {},
+                          selectedCategory: selectedCategory),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 0.54,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 15,
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return const GridViewItemShimmer();
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         }));
   }
 
-  Widget listItem(String name, String imgPath, VoidCallback function,
-      String selectedCategory) {
-    return SizedBox(
-      width: 65,
-      child: Column(
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: selectedCategory == name.toLowerCase()
-                  ? Colors.black
-                  : itemBackground,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: IconButton(
-              onPressed: function,
-              icon: name == 'Popular'
-                  ? Icon(
-                      selectedCategory == name.toLowerCase()
-                          ? Icons.star
-                          : Icons.star_border,
-                      color: selectedCategory == name.toLowerCase()
-                          ? backgroundColor
-                          : hintTextColor,
-                    )
-                  : SvgPicture.asset(
-                      imgPath,
-                      color: selectedCategory == name.toLowerCase()
-                          ? Colors.white
-                          : hintTextColor,
-                    ),
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            name,
-            style: const TextStyle(
-              fontFamily: 'NunitoSans',
-              color: Colors.black,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget buildHomeShimmer() => const GridViewItemShimmer();
 }

@@ -3,18 +3,18 @@ import 'package:furniture_app/home/models/product.dart';
 
 class ApiService {
   String endpoint =
-      'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture';
+      'https://fakeshopapi-l2ng.onrender.com/app/v1/products?category=furniture';
   final dio = Dio();
   Future<List<Product>> getProduct(String category) async {
     try {
       late Response<dynamic> response;
       if (category == '' || category == 'popular') {
         endpoint =
-            'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture';
+            'https://fakeshopapi-l2ng.onrender.com/app/v1/products?category=furniture';
         response = await dio.get(endpoint);
       } else {
         endpoint =
-            'http://fake-shop-api.ap-south-1.elasticbeanstalk.com/app/v1/products?category=furniture,$category';
+            'https://fakeshopapi-l2ng.onrender.com/app/v1/products?category=furniture,$category';
         response = await dio.get(endpoint);
       }
       if (response.statusCode != 200) {

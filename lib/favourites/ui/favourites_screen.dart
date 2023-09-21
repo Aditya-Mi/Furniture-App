@@ -5,6 +5,7 @@ import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/favourites/ui/favourite_list_item.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
+import 'package:furniture_app/favourites/ui/favourite_list_item_shimmer.dart';
 import 'package:furniture_app/providers/favourite_provider.dart';
 import 'package:furniture_app/providers/user_provider.dart';
 
@@ -51,10 +52,15 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
               ? const Center(
                   child: Text('No products in favourites.'),
                 )
-              : ListView.builder(
+              : ListView.separated(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   itemCount: favouriteItems.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      color: dividerColor,
+                    );
+                  },
                   itemBuilder: (context, index) {
                     final fItem = favouriteItems[index].data();
                     final favouriteItem = FavouriteItem.fromJson(fItem);
@@ -70,9 +76,19 @@ class _FavouriteScreenState extends ConsumerState<FavouriteScreen> {
             child: Text(error.toString()),
           );
         },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        loading: () {
+          return ListView.separated(
+            itemCount: 5,
+            separatorBuilder: (context, index) {
+              return const Divider(
+                color: dividerColor,
+              );
+            },
+            itemBuilder: (context, index) {
+              return const FavouriteListItemShimmer();
+            },
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CustomButton(
