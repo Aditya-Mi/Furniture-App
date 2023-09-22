@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/common_widgets/custom_button.dart';
 import 'package:furniture_app/constants/colors.dart';
 import 'package:furniture_app/providers/auth_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 import 'package:furniture_app/screens/main_screen.dart';
 import 'package:furniture_app/auth/ui/sign_up.dart';
 
@@ -31,6 +32,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           email: _enteredEmail, password: _enteredPassword);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
+          ref.refresh(userProvider);
           if (context.mounted) {
             Navigator.pushReplacement(
               context,

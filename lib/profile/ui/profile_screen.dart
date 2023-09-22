@@ -18,11 +18,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void signOut() async {
     await ref.read(authRepositoryProvider).signOut();
     if (context.mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ),
-      );
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+          (Route<dynamic> route) => false);
     }
   }
 

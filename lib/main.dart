@@ -32,21 +32,23 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
     return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(useMaterial3: true),
-        home: onBoarding! == true
-            ? const OnBoardingScreen()
-            : authState.when(
-                data: (user) {
-                  if (user != null) {
-                    return const MainScreen();
-                  }
-                  return const LoginScreen();
-                },
-                error: (error, stackTrace) {
-                  return const LoginScreen();
-                },
-                loading: () => const SplashScreen()));
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: onBoarding! == true
+          ? const OnBoardingScreen()
+          : authState.when(
+              data: (user) {
+                if (user != null) {
+                  return const MainScreen();
+                }
+                return const LoginScreen();
+              },
+              error: (error, stackTrace) {
+                return const LoginScreen();
+              },
+              loading: () => const SplashScreen(),
+            ),
+    );
   }
 }

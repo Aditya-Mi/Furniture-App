@@ -7,7 +7,7 @@ import 'package:furniture_app/providers/user_provider.dart';
 import 'package:furniture_app/repository/firestore_repository.dart';
 
 final cartItemsProvider = StreamProvider<CartSnapshot>((ref) {
-  final user = ref.watch(userProvider).value;
+  final user = ref.read(userProvider).value;
   final cartItemStream = FirebaseFirestore.instance
       .collection('users')
       .doc(user!.uid)
