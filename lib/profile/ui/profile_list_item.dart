@@ -19,7 +19,7 @@ class ProfileListItem extends StatelessWidget {
       elevation: 10,
       shadowColor: Colors.white70,
       child: ListTile(
-        onTap: () {},
+        onTap: function,
         contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
         shape: const BeveledRectangleBorder(),
         title: Padding(

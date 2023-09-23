@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/profile/ui/address/address_screen.dart';
 import 'package:furniture_app/profile/ui/profile_list_item.dart';
 import 'package:furniture_app/providers/auth_provider.dart';
 import 'package:furniture_app/auth/ui/login_screen.dart';
@@ -140,7 +141,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ProfileListItem(
                   title: 'Shipping Addresses',
                   subtitle: '03 addresses',
-                  function: () {},
+                  function: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddressScreen()));
+                  },
                 ),
                 SizedBox(
                   height: h * 0.02,
