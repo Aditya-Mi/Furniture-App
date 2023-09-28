@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/profile/models/address.dart';
 import 'package:furniture_app/profile/ui/address/address_list_item.dart';
 import 'package:furniture_app/profile/ui/address/edit_address_screen.dart';
+import 'package:furniture_app/providers/address_provider.dart';
+import 'package:furniture_app/providers/user_provider.dart';
 
 class AddressScreen extends ConsumerStatefulWidget {
   const AddressScreen({super.key});
@@ -14,6 +17,8 @@ class AddressScreen extends ConsumerStatefulWidget {
 class _AddressScreenState extends ConsumerState<AddressScreen> {
   @override
   Widget build(BuildContext context) {
+    final addressData = ref.watch(addressesProvider);
+    final user = ref.read(userProvider).value;
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0.0,
@@ -28,12 +33,33 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
         ),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(20),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return const AddressListItem();
+      body: addressData.when(
+        data: (querysnapshot) {
+          final addresses = querysnapshot.docs;
+          return addresses.isEmpty
+              ? const Center(
+                  child: Text('No addresses added'),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: addresses.length,
+                  itemBuilder: (context, index) {
+                    final aItem = addresses[index].data();
+                    final address = Address.fromJson(aItem);
+                    return AddressListItem(
+                      address: address,
+                    );
+                  },
+                );
         },
+        error: (error, stackTrace) {
+          return Center(
+            child: Text(error.toString()),
+          );
+        },
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
       floatingActionButton: Container(
         height: 48,
@@ -54,7 +80,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const EditAddress(),
+                builder: (context) => EditAddress(user!.uid),
               ),
             );
           },

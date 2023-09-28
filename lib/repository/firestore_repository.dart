@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:furniture_app/cart/models/cart_item.dart';
 import 'package:furniture_app/favourites/models/favourite_item.dart';
+import 'package:furniture_app/profile/models/address.dart';
 
 class FirestoreRepository {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -134,5 +135,64 @@ class FirestoreRepository {
     } catch (e) {
       throw e.toString();
     }
+  }
+
+  Future<String> addAddress(Address address, String uid) async {
+    String res = "Some error occurred";
+    try {
+      final addressRef = await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('addresses')
+          .get();
+      if (addressRef.docs.isEmpty) {
+        address.isDefault = true;
+      }
+      await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('addresses')
+          .doc(address.id)
+          .set(address.toJson());
+      res = 'success';
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<String> deleteAddress(String addressId, String uid) async {
+    String res = "Some error occurred";
+    try {
+      await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('addresses')
+          .doc(addressId)
+          .delete();
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<String> updateAddress(
+      Address address, String uid, String addressId) async {
+    String res = "Some error occurred";
+    try {
+      await _firebaseFirestore
+          .collection('users')
+          .doc(uid)
+          .collection('addresses')
+          .doc(addressId)
+          .update(
+            address.toJson(),
+          );
+      res = "success";
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
   }
 }

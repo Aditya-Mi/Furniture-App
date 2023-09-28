@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:furniture_app/constants/colors.dart';
+import 'package:furniture_app/profile/models/address.dart';
 
-class AddressListItem extends StatelessWidget {
-  const AddressListItem({super.key});
+class AddressListItem extends StatefulWidget {
+  final Address address;
+  const AddressListItem({super.key, required this.address});
+
+  @override
+  State<AddressListItem> createState() => _AddressListItemState();
+}
+
+class _AddressListItemState extends State<AddressListItem> {
+  var isDefault;
+  @override
+  void initState() {
+    super.initState();
+    isDefault = widget.address.isDefault;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final finalAddress =
+        "${widget.address.address}, ${widget.address.city}, ${widget.address.district}, ${widget.address.country}";
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -20,8 +37,15 @@ class AddressListItem extends StatelessWidget {
                 height: 24,
                 width: 24,
                 child: Checkbox(
-                  value: false,
-                  onChanged: (value) {},
+                  value: isDefault,
+                  tristate: false,
+                  onChanged: (value) {
+                    setState(() {
+                      isDefault = value;
+                    });
+                  },
+                  activeColor: Colors.black,
+                  checkColor: Colors.white,
                 ),
               ),
               const SizedBox(
@@ -56,13 +80,13 @@ class AddressListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'name',
-                        style: TextStyle(
+                      Text(
+                        widget.address.name,
+                        style: const TextStyle(
                           fontFamily: 'NunitoSans',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -80,11 +104,12 @@ class AddressListItem extends StatelessWidget {
                 const Divider(
                   height: 1,
                 ),
-                const Padding(
-                  padding: const EdgeInsets.all(10),
+                Padding(
+                  padding: const EdgeInsets.all(20),
                   child: Text(
-                    'address',
-                    style: TextStyle(
+                    finalAddress,
+                    maxLines: 2,
+                    style: const TextStyle(
                       fontFamily: 'NunitoSans',
                       fontSize: 14,
                       color: totalColor,
