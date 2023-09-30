@@ -1,16 +1,22 @@
-# furniture_app
+# Furniture Shopping App
 
-A new Flutter project.
+## Description
+A furniture shopping app that allows users to browse a wide range of furniture items, authenticate through Firebase, and perform various actions such as viewing furniture details, adding items to favorites, managing a shopping cart, and saving delivery addresses.
 
-## Getting Started
+## Features
+- User authentication through Firebase.
+- Browse and view details of furniture items.
+- Add furniture items to the favorites list.
+- View and manage items in the favorites list.
+- Add furniture items to the shopping cart.
+- View and manage items in the shopping cart.
+- Add and manage delivery addresses.
+- Set a default delivery address.
 
-This project is a starting point for a Flutter application.
+## Technologies Used
+- Flutter for building the app.
+- Riverpod for state management.
+- Firebase Authentication for user authentication.
+- Firestore for storing user data.
+- External API for fetching furniture data.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
