@@ -41,35 +41,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final searchController = ref.watch(searchControllerProvider);
     return Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
-          scrolledUnderElevation: 0.0,
-          title: const Column(
-            children: [
-              Text(
-                'Make home',
-                style: TextStyle(
-                    fontFamily: 'Gelasio', fontSize: 18, color: hintTextColor),
-              ),
-              Text(
-                'BEAUTIFUL',
-                style: TextStyle(
-                    fontFamily: 'Gelasio',
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset('assets/icons/bell.svg'),
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        scrolledUnderElevation: 0.0,
+        title: const Column(
+          children: [
+            Text(
+              'Make home',
+              style: TextStyle(
+                  fontFamily: 'Gelasio', fontSize: 18, color: hintTextColor),
             ),
+            Text(
+              'BEAUTIFUL',
+              style: TextStyle(
+                  fontFamily: 'Gelasio',
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            )
           ],
         ),
-        body: ref.watch(productFilteredDataProvider).when(data: (data) {
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: SvgPicture.asset('assets/icons/bell.svg'),
+          ),
+        ],
+      ),
+      body: ref.watch(productFilteredDataProvider).when(
+        data: (data) {
           return SizedBox(
             height: double.infinity,
             child: Column(
@@ -211,60 +212,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           );
-        }, error: (error, stackTrace) {
+        },
+        error: (error, stackTrace) {
           return Center(
             child: Text(error.toString()),
           );
-        }, loading: () {
+        },
+        loading: () {
           return SizedBox(
             height: double.infinity,
             child: Column(
               children: [
-                SizedBox(
-                  height: 110,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    padding:
-                        const EdgeInsets.only(left: 15, top: 15, bottom: 15),
-                    children: [
-                      CategoryListItem(
-                          name: 'Popular',
-                          imgPath: 'assets/icons/chair.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                      const SizedBox(width: 10),
-                      CategoryListItem(
-                          name: 'Chair',
-                          imgPath: 'assets/icons/chair.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                      const SizedBox(width: 10),
-                      CategoryListItem(
-                          name: 'Table',
-                          imgPath: 'assets/icons/table.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                      const SizedBox(width: 10),
-                      CategoryListItem(
-                          name: 'Armchair',
-                          imgPath: 'assets/icons/armchair.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                      const SizedBox(width: 10),
-                      CategoryListItem(
-                          name: 'Bed',
-                          imgPath: 'assets/icons/bed.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                      const SizedBox(width: 10),
-                      CategoryListItem(
-                          name: 'Lamp',
-                          imgPath: 'assets/icons/lamp.svg',
-                          function: () {},
-                          selectedCategory: selectedCategory),
-                    ],
-                  ),
-                ),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -287,7 +245,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 
   Widget buildHomeShimmer() => const GridViewItemShimmer();
