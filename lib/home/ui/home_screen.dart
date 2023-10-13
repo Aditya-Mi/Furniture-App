@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:furniture_app/home/ui/grid_view_item_shimmer.dart';
 import 'package:furniture_app/providers/product_provider.dart';
+import 'package:furniture_app/providers/search_provider.dart';
 import 'package:furniture_app/providers/user_provider.dart';
 
 final dio = Dio();
@@ -19,9 +20,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final TextEditingController _searchTextContorller = TextEditingController();
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _searchTextContorller.dispose();
+    super.dispose();
   }
 
   void toggleCategory(String selectedCategory, String category) {
@@ -36,14 +39,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     ref.watch(userProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
+    final searchController = ref.watch(searchControllerProvider);
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
-          leading: IconButton(
-            icon: SvgPicture.asset('assets/icons/search.svg'),
-            onPressed: () {},
-          ),
           title: const Column(
             children: [
               Text(
@@ -74,6 +74,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             height: double.infinity,
             child: Column(
               children: [
+                Container(
+                  height: 60,
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: TextField(
+                    controller: _searchTextContorller,
+                    keyboardType: TextInputType.text,
+                    onChanged: (value) {
+                      ref
+                          .read(searchControllerProvider.notifier)
+                          .onSearchUser(_searchTextContorller.text, data);
+                    },
+                    onEditingComplete: () {
+                      ref
+                          .read(searchControllerProvider.notifier)
+                          .onSearchUser(_searchTextContorller.text, data);
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: SvgPicture.asset(
+                        'assets/icons/search.svg',
+                        height: 24,
+                        width: 24,
+                        fit: BoxFit.scaleDown,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          _searchTextContorller.clear();
+                          ref
+                              .read(searchControllerProvider.notifier)
+                              .onSearchUser(_searchTextContorller.text, data);
+                        },
+                        icon: const Icon(Icons.cancel_outlined),
+                      ),
+                      hintText: 'Search',
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                          color: Colors.black,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(10),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 110,
                   child: ListView(
@@ -143,9 +194,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         mainAxisSpacing: 15,
                         crossAxisCount: 2,
                       ),
-                      itemCount: data.length,
+                      itemCount: searchController.isNotEmpty
+                          ? searchController.length
+                          : data.length,
                       itemBuilder: (context, index) {
-                        final product = data[index];
+                        final product = searchController.isNotEmpty
+                            ? searchController[index]
+                            : data[index];
                         return GridViewItem(
                           product: product,
                         );
